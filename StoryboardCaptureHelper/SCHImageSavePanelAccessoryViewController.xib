@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="SCHImageSavePanelAccessoryViewController">
+            <connections>
+                <outlet property="pubType" destination="GaM-vV-pSX" id="62p-JP-F9N"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="158" height="35"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oYG-Uy-gmB">
+                    <rect key="frame" x="8" y="9" width="37" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="BCV-Pl-ah9"/>
+                        <constraint firstAttribute="width" constant="33" id="sVX-bZ-cIx"/>
+                    </constraints>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Type:" id="1M9-sF-QaT">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="GaM-vV-pSX">
+                    <rect key="frame" x="51" y="4" width="100" height="26"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="G0V-PV-wtK"/>
+                        <constraint firstAttribute="width" constant="95" id="jiF-kH-VpC"/>
+                    </constraints>
+                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="4CB-tm-9AP">
+                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="menu"/>
+                        <menu key="menu" id="7QO-X0-C2a">
+                            <items>
+                                <menuItem title="JPG" id="eNK-il-9xd"/>
+                                <menuItem title="PNG" id="yW4-EV-jNR"/>
+                                <menuItem title="GIF" id="cyq-lg-fVC"/>
+                                <menuItem title="BMP" id="URA-1W-2fp">
+                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                </menuItem>
+                                <menuItem title="TIFF" id="WVS-fi-yHv">
+                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                </menuItem>
+                            </items>
+                        </menu>
+                    </popUpButtonCell>
+                    <connections>
+                        <action selector="pubType_khiDuocChon:" target="-2" id="3z4-ip-YfN"/>
+                    </connections>
+                </popUpButton>
+            </subviews>
+            <constraints>
+                <constraint firstItem="oYG-Uy-gmB" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="10" id="0ll-S0-zuf"/>
+                <constraint firstItem="GaM-vV-pSX" firstAttribute="leading" secondItem="oYG-Uy-gmB" secondAttribute="trailing" constant="10" id="XYg-n4-h2Q"/>
+                <constraint firstAttribute="centerY" secondItem="GaM-vV-pSX" secondAttribute="centerY" id="kXh-KL-2lg"/>
+                <constraint firstAttribute="centerY" secondItem="oYG-Uy-gmB" secondAttribute="centerY" id="wID-ui-3Aw"/>
+            </constraints>
+            <point key="canvasLocation" x="20" y="295.5"/>
+        </customView>
+    </objects>
+</document>

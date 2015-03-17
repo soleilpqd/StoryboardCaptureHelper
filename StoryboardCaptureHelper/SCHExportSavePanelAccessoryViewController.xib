@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="SCHExportSavePanelAccessoryViewController">
+            <connections>
+                <outlet property="btnChonHTML" destination="aLR-cP-WHx" id="cfW-MY-WGf"/>
+                <outlet property="btnChonJSON" destination="52s-hm-EW4" id="ZmK-jb-Fmt"/>
+                <outlet property="btnChonNhieuMau" destination="sXb-Gg-FJz" id="iVZ-DN-ZFp"/>
+                <outlet property="btnChonPLIST" destination="m6B-tW-bAA" id="GIq-gW-tF5"/>
+                <outlet property="pubType" destination="o3f-1R-Ywx" id="0kA-fE-mkj"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="570" height="25"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IGG-Q5-V0u">
+                    <rect key="frame" x="6" y="4" width="77" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="73" id="ARH-6W-iv4"/>
+                        <constraint firstAttribute="height" constant="17" id="iJ2-aR-Fbl"/>
+                    </constraints>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Image type:" id="XBH-kU-tLm">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="o3f-1R-Ywx">
+                    <rect key="frame" x="87" y="-1" width="100" height="26"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="95" id="bkt-6O-sWo"/>
+                        <constraint firstAttribute="height" constant="21" id="ga9-ds-cGZ"/>
+                    </constraints>
+                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="68c-d6-44i">
+                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="menu"/>
+                        <menu key="menu" id="CKN-zt-HQm">
+                            <items>
+                                <menuItem title="JPG" id="hsf-8b-eHE"/>
+                                <menuItem title="PNG" id="OYo-Zd-pIz"/>
+                                <menuItem title="GIF" id="pJV-lF-RlK"/>
+                                <menuItem title="BMP" id="Ugc-ch-7XY">
+                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                </menuItem>
+                                <menuItem title="TIFF" id="Qz4-Dn-TiM">
+                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                </menuItem>
+                            </items>
+                        </menu>
+                    </popUpButtonCell>
+                    <connections>
+                        <action selector="pubType_khiDuocChon:" target="-2" id="w5h-th-H9g"/>
+                    </connections>
+                </popUpButton>
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="aLR-cP-WHx">
+                    <rect key="frame" x="190" y="4" width="61" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="57" id="7uh-W1-NzY"/>
+                        <constraint firstAttribute="height" constant="14" id="vB1-PV-QQn"/>
+                    </constraints>
+                    <buttonCell key="cell" type="check" title="HTML" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="ogr-Ei-nwA">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="btnCheckHTML_khiDuocClick:" target="-2" id="5qW-xy-z0R"/>
+                    </connections>
+                </button>
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="52s-hm-EW4">
+                    <rect key="frame" x="255" y="4" width="61" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="57" id="ooX-Rn-tfc"/>
+                        <constraint firstAttribute="height" constant="14" id="vGi-aC-oBD"/>
+                    </constraints>
+                    <buttonCell key="cell" type="check" title="JSON" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="M90-LE-U3k">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="btnCheckJSON_khiDuocClick:" target="-2" id="Tid-tZ-BKB"/>
+                    </connections>
+                </button>
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="m6B-tW-bAA">
+                    <rect key="frame" x="320" y="4" width="61" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="14" id="CP7-BV-eDp"/>
+                        <constraint firstAttribute="width" constant="57" id="NI1-SU-WmA"/>
+                    </constraints>
+                    <buttonCell key="cell" type="check" title="PLIST" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="vbn-4x-Oft">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="btnCheckPLIST_khiDuocClick:" target="-2" id="YJv-4g-KsR"/>
+                    </connections>
+                </button>
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="sXb-Gg-FJz">
+                    <rect key="frame" x="385" y="4" width="180" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="176" id="No8-qN-ZHe"/>
+                        <constraint firstAttribute="height" constant="14" id="bVz-3g-VxJ"/>
+                    </constraints>
+                    <buttonCell key="cell" type="check" title="Multi-color segue classes" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="zDV-Oh-abX">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="btnChonNhieuMau_khiDuocClick:" target="-2" id="STV-zh-2Zm"/>
+                    </connections>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="centerY" secondItem="sXb-Gg-FJz" secondAttribute="centerY" id="3rP-qJ-2sk"/>
+                <constraint firstItem="o3f-1R-Ywx" firstAttribute="leading" secondItem="IGG-Q5-V0u" secondAttribute="trailing" constant="8" id="FrL-Er-Wr6"/>
+                <constraint firstAttribute="centerY" secondItem="m6B-tW-bAA" secondAttribute="centerY" id="Gys-hK-awO"/>
+                <constraint firstItem="aLR-cP-WHx" firstAttribute="leading" secondItem="o3f-1R-Ywx" secondAttribute="trailing" constant="8" id="Ox5-6i-DUI"/>
+                <constraint firstItem="52s-hm-EW4" firstAttribute="leading" secondItem="aLR-cP-WHx" secondAttribute="trailing" constant="8" id="Twj-gM-pmb"/>
+                <constraint firstAttribute="centerY" secondItem="o3f-1R-Ywx" secondAttribute="centerY" id="X1K-VG-6fQ"/>
+                <constraint firstItem="m6B-tW-bAA" firstAttribute="leading" secondItem="52s-hm-EW4" secondAttribute="trailing" constant="8" id="ZAC-1V-R7u"/>
+                <constraint firstItem="sXb-Gg-FJz" firstAttribute="leading" secondItem="m6B-tW-bAA" secondAttribute="trailing" constant="8" id="ewM-Bx-ccu"/>
+                <constraint firstAttribute="centerY" secondItem="52s-hm-EW4" secondAttribute="centerY" id="lRx-To-1f7"/>
+                <constraint firstAttribute="centerY" secondItem="aLR-cP-WHx" secondAttribute="centerY" id="mVC-Ze-ygf"/>
+                <constraint firstAttribute="centerY" secondItem="IGG-Q5-V0u" secondAttribute="centerY" id="sre-kc-Y6N"/>
+                <constraint firstItem="IGG-Q5-V0u" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="8" id="t1Q-qn-eAs"/>
+            </constraints>
+            <point key="canvasLocation" x="533" y="286.5"/>
+        </customView>
+    </objects>
+</document>

@@ -1,0 +1,46 @@
+<!--
+  %@
+  Created by %@ on %@
+-->
+<html>
+<head>
+  <title>%@</title>
+  <!-- Javascript to draw segues -->
+  <script src="drawing.js"></script>
+  <!-- Javascript to select elements -->
+  <script src="selection.js"></script>
+  <!-- Use CSS to align view controller frames into place -->
+  <link rel="stylesheet" href="styles.css"></link>
+</head>
+<body style="background-color:black;">
+  <div id="main_canvas">
+    <!-- Because I still can not find out how to export the background view (where XCode draw the segues) of storyboard editor to image,
+    draw manualy the segues by Javascript-->
+    <canvas id="background_context" onClick="backgroundDidClicked()">Require browser supporting HTML5 canvas</canvas>
+    <!-- Segues icon. Segue line color defined in css class -->
+%@    <!-- Red dash line border div to highlight the selected view -->
+    <div id="highlight_indicator"></div>
+    <!-- Each View controller frame of storyboard will be represented by a HTML DIV -->
+%@    <!-- Right view which displays list of views -->
+    <div id="show_menu" onClick="displayMenu( 1 );">Show menu</div>
+    <div id="frames_list">
+      <div id="hide_menu" onClick="displayMenu( 0 );"><center>Hide menu</center></div>
+      <h3>%@</h3>
+      <p>%@</p>
+      <hr/>
+      <form action="">
+%@      </form>
+    </div>
+  </div>
+  <!-- Now draw the segues -->
+  <script>
+    // Synchronize drawing canvas size with display area size
+    var canvas = document.getElementById( "background_context" );
+    var mainView = document.getElementById ( "main_canvas" );
+    canvas.width = mainView.offsetWidth;
+    canvas.height = mainView.offsetHeight;
+    // Draw segues
+    drawAllSegues( canvas );
+  </script>
+</body>
+</html>

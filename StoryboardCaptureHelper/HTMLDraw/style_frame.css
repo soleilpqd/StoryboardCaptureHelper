@@ -1,0 +1,8 @@
+#%@ {
+  position:absolute;
+  top:%.0fpx;
+  left:%.0fpx;
+  width:%.0fpx;
+  height:%.0fpx;
+  background-image:url("images/%@");
+}

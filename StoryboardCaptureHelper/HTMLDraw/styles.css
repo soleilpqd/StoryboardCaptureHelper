@@ -1,0 +1,52 @@
+/*
+ * %@
+ * Created by %@ on %@
+ */
+
+#highlight_indicator {
+  background-color:transparent;
+  position:absolute;
+  top:0;
+  left:0;
+  width:0;
+  height:0;
+  border:none;
+}
+/* Right menu */
+#frames_list {
+  background-color:lavender;
+  position:fixed;
+  top:0px;
+  right:0px;
+  width:200px;
+  bottom:0px;
+  overflow:scroll;
+}
+#show_menu {
+  background-color:lavender;
+  display:block;
+  border:1px solid black;
+  position:fixed;
+  top:0px;
+  right:0px;
+  width:80px;
+  height:20px;
+}
+#hide_menu {
+  background-color:white;
+  display:block;
+  border:1px solid black;
+}
+/* Segues */
+%@%@/* Main DIV */
+#main_canvas {
+  background-color:white;
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:%.0fpx;
+  height:%.0fpx;
+  padding-right:200px;
+}
+/* Views */
+%@

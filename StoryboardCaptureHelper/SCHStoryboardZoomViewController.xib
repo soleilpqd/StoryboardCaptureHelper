@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="SCHStoryboardZoomViewController">
+            <connections>
+                <outlet property="btnApply" destination="DYS-er-TLO" id="AfG-jk-d8r"/>
+                <outlet property="btnCheckLiveZooming" destination="mHa-mZ-frg" id="RWu-3m-GXh"/>
+                <outlet property="sldScale" destination="PKp-cV-h1C" id="RrY-Qb-tic"/>
+                <outlet property="txfScale" destination="11f-6B-NBH" id="EDG-fS-Ell"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="100"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PKp-cV-h1C">
+                    <rect key="frame" x="18" y="61" width="392" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="lO1-1Y-cUY"/>
+                    </constraints>
+                    <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="lFf-Ng-qtt"/>
+                    <connections>
+                        <action selector="sldScale_onChanged:" target="-2" id="RLh-1e-NJ4"/>
+                    </connections>
+                </slider>
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11f-6B-NBH">
+                    <rect key="frame" x="414" y="60" width="46" height="22"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="22" id="2Z8-i5-dKF"/>
+                        <constraint firstAttribute="width" constant="46" id="CwZ-AI-10h"/>
+                    </constraints>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="bc5-xn-ngB">
+                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="KzA-Uj-Y0z"/>
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <action selector="txfScale_onChanged:" target="-2" id="6Up-G6-Nit"/>
+                    </connections>
+                </textField>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DYS-er-TLO">
+                    <rect key="frame" x="390" y="12" width="76" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="NEs-oL-ct6"/>
+                        <constraint firstAttribute="width" constant="64" id="shv-le-GDI"/>
+                    </constraints>
+                    <buttonCell key="cell" type="push" title="Apply" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Puo-rT-gSw">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="btnApply_onTap:" target="-2" id="bCZ-m1-fgr"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2mM-2g-5lI">
+                    <rect key="frame" x="314" y="12" width="76" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="64" id="9ZB-YJ-eLr"/>
+                        <constraint firstAttribute="height" constant="21" id="fqt-MY-IjL"/>
+                    </constraints>
+                    <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="gx7-Rh-70g">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="btnClose_onTap:" target="-2" id="rsQ-Bl-BxQ"/>
+                    </connections>
+                </button>
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="mHa-mZ-frg">
+                    <rect key="frame" x="18" y="20" width="137" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="133" id="aAf-3q-x5W"/>
+                        <constraint firstAttribute="height" constant="14" id="lfh-Do-PzX"/>
+                    </constraints>
+                    <buttonCell key="cell" type="check" title="Live zooming" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Qov-d8-PAa">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="btnCheck_onTap:" target="-2" id="TxX-js-BGT"/>
+                    </connections>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstItem="DYS-er-TLO" firstAttribute="top" secondItem="11f-6B-NBH" secondAttribute="bottom" constant="20" id="02s-ZY-4cW"/>
+                <constraint firstAttribute="trailing" secondItem="11f-6B-NBH" secondAttribute="trailing" constant="20" id="1b4-cB-GwE"/>
+                <constraint firstAttribute="trailing" secondItem="DYS-er-TLO" secondAttribute="trailing" constant="20" id="1ej-Cn-35T"/>
+                <constraint firstItem="mHa-mZ-frg" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="20" id="H4y-Ml-YoW"/>
+                <constraint firstItem="mHa-mZ-frg" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="64" id="QD8-BW-6L7"/>
+                <constraint firstAttribute="trailing" secondItem="PKp-cV-h1C" secondAttribute="trailing" constant="72" id="XcK-LF-9Qb"/>
+                <constraint firstItem="11f-6B-NBH" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="18" id="bwt-eW-mtE"/>
+                <constraint firstItem="PKp-cV-h1C" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="20" id="dJM-Kc-pa0"/>
+                <constraint firstItem="2mM-2g-5lI" firstAttribute="top" secondItem="PKp-cV-h1C" secondAttribute="bottom" constant="23" id="jg4-W2-N2v"/>
+                <constraint firstAttribute="trailing" secondItem="2mM-2g-5lI" secondAttribute="trailing" constant="96" id="qzR-cZ-VzC"/>
+                <constraint firstItem="PKp-cV-h1C" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="20" id="tCf-Fg-kzm"/>
+            </constraints>
+            <point key="canvasLocation" x="408" y="321"/>
+        </customView>
+    </objects>
+</document>
