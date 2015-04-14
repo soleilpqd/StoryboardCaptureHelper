@@ -18,7 +18,7 @@ Right click in Storyboard editor, on context menu you will find the submenu with
 
 * **Storyboard capture:** Capture whole storyboard to image.
 * **Export all frames:** make capture of each view controller of storyboard. It has options:
-- HTML: Make an HTML page which fakes the storyboard.
-- Multi color segue classes: in HTML page, each storyboard segue class has own color (segues same class have same color).
-- JSON: Save information about view controllers frame, segues into JSON file.
-- PLIST: Save information about view controllers frame, segues into PLIST file.
+   - HTML: Make an HTML page which fakes the storyboard.
+   - Multi color segue classes: in HTML page, each storyboard segue class has own color (segues same class have same color).
+   - JSON: Save information about view controllers frame, segues into JSON file.
+   - PLIST: Save information about view controllers frame, segues into PLIST file.
