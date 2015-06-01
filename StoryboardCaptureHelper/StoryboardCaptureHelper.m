@@ -109,80 +109,89 @@ CGRect SCH_constrainFrameRect_toScreen( id object, SEL selector, CGRect rect, NS
     return sharedPlugin;
 }
 
+-( void )infectXCodeMenu {
+    Class ideWorkspaceWindowClass = NSClassFromString( @"IDEWorkspaceWindow" );
+    class_addMethod( ideWorkspaceWindowClass, @selector( constrainFrameRect:toScreen: ),
+                    ( IMP )&SCH_constrainFrameRect_toScreen, "{{dd}{dd}}@:{{dd}{dd}}@" );
+    Class IBStoryboardCanvasViewClass = NSClassFromString( @"IBStoryboardCanvasView" );
+    _original_storyboard_menuForEvent = ( NSMenu*(*)( id, SEL, NSEvent* ))class_getMethodImplementation( IBStoryboardCanvasViewClass, @selector( menuForEvent: ));
+    Method method = class_getInstanceMethod( IBStoryboardCanvasViewClass, @selector( menuForEvent: ));
+    method_setImplementation( method, ( IMP )&SCH_storyboard_menuForEvent );
+    Class IDENavigatorOutlineViewClass = NSClassFromString( @"IDENavigatorOutlineView" );
+    _original_projectTree_menuForEvent = ( NSMenu*(*)( id, SEL, NSEvent* ))class_getMethodImplementation( IDENavigatorOutlineViewClass, @selector( menuForEvent: ));
+    method = class_getInstanceMethod( IDENavigatorOutlineViewClass, @selector( menuForEvent: ));
+    method_setImplementation( method, ( IMP )&SCH_projectTree_menuForEvent );
+}
+
+-( void )makeMyMenu {
+    self.mnuStoryboardContextItem = [[ NSMenuItem alloc ] initWithTitle:@"Capture to image"
+                                                                 action:nil
+                                                          keyEquivalent:@"" ];
+    self.mnuStoryboardContextItem.submenu = [[ NSMenu alloc ] initWithTitle:self.mnuStoryboardContextItem.title ];
+    // Menu capture storyboard (xib)
+    NSMenuItem *actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Storyboard capture"
+                                                              action:@selector( menuChupAnh_duocChon: )
+                                                       keyEquivalent:@"" ];
+    [ actionMenuItem setTarget:self ];
+    [ self.mnuStoryboardContextItem.submenu addItem:actionMenuItem ];
+    self.mnuChupAnhStoryboard = actionMenuItem;
+    // Menu capture project tree
+    actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Project tree capture"
+                                                  action:@selector( menuChupAnh_duocChon: )
+                                           keyEquivalent:@"" ];
+    [ actionMenuItem setTarget:self ];
+    self.mnuChupAnhPrjTree = actionMenuItem;
+    // Export
+    actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Export all frames"
+                                                  action:@selector( menuXuatRaHTML_duocChon: )
+                                           keyEquivalent:@"" ];
+    [ actionMenuItem setTarget:self ];
+    [ self.mnuStoryboardContextItem.submenu addItem:actionMenuItem ];
+    self.mnuXuatRaHTML = actionMenuItem;
+    
+    // Menu set xib zoom scale
+    actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Custom zoom sclae"
+                                                  action:@selector( menuZoom_duocChon: )
+                                           keyEquivalent:@"" ];
+    [ actionMenuItem setTarget:self ];
+    self.mnuSetZoomScale = actionMenuItem;
+}
+
+-( void )makeSearchPath {
+    self.arrStoryboardPath = @[ @"NSTabView", @"DVTControllerContentView", @"DVTSplitView", @"DVTReplacementView",
+                                @"DVTControllerContentView", @"DVTSplitView", @"DVTLayoutView_ML", @"NSView",
+                                @"DVTControllerContentView", @"DVTControllerContentView", @"NSView", @"DVTBorderedView",
+                                @"DVTControllerContentView", @"IBStructureAreaDockLabelContainer", @"DVTSplitView",
+                                @"DVTReplacementView", @"DVTControllerContentView", @"DVTStackView_AppKitAutolayout",
+                                @"IBCanvasScrollView" ];
+    self.arrStoryboardIdentifiers = @[ @"IBStoryboardCanvasView", @"IBCanvasView" ];
+    
+    self.arrPrjTreePath = @[ @"NSTabView", @"DVTControllerContentView", @"DVTSplitView", @"DVTReplacementView",
+                             @"DVTControllerContentView", @"DVTBorderedView", @"DVTReplacementView",
+                             @"DVTControllerContentView", @"DVTScrollView" ];
+    self.arrPrjTreeIdentifiers = @[ @"IDENavigatorOutlineView" ];
+}
+
+-( void )makeMyComponents {
+    self.savePanelAccessoryView = [[ SCHImageSavePanelAccessoryViewController alloc ] initWithNibName:@"SCHImageSavePanelAccessoryViewController"
+                                                                                               bundle:self.bundle ];
+    self.exportPanelAccesoryView = [[ SCHExportSavePanelAccessoryViewController alloc ] initWithNibName:@"SCHExportSavePanelAccessoryViewController"
+                                                                                                 bundle:self.bundle ];
+    self.schZoomer = [[ SCHStoryboardZoomViewController alloc ] initWithNibName:@"SCHStoryboardZoomViewController"
+                                                                         bundle:self.bundle ];
+    self.winZoomer = [ NSWindow windowWithContentViewController:self.schZoomer ];
+    self.winZoomer.styleMask &= ~NSResizableWindowMask;
+}
+
 - (id)initWithBundle:(NSBundle *)plugin
 {
     if (self = [super init]) {
         // reference to plugin's bundle, for resource access
         self.bundle = plugin;
-        // Infect into XCode
-        Class ideWorkspaceWindowClass = NSClassFromString( @"IDEWorkspaceWindow" );
-        class_addMethod( ideWorkspaceWindowClass, @selector( constrainFrameRect:toScreen: ),
-                        ( IMP )&SCH_constrainFrameRect_toScreen, "{{dd}{dd}}@:{{dd}{dd}}@" );
-        Class IBStoryboardCanvasViewClass = NSClassFromString( @"IBStoryboardCanvasView" );
-        _original_storyboard_menuForEvent = ( NSMenu*(*)( id, SEL, NSEvent* ))class_getMethodImplementation( IBStoryboardCanvasViewClass, @selector( menuForEvent: ));
-        Method method = class_getInstanceMethod( IBStoryboardCanvasViewClass, @selector( menuForEvent: ));
-        method_setImplementation( method, ( IMP )&SCH_storyboard_menuForEvent );
-        Class IDENavigatorOutlineViewClass = NSClassFromString( @"IDENavigatorOutlineView" );
-        _original_projectTree_menuForEvent = ( NSMenu*(*)( id, SEL, NSEvent* ))class_getMethodImplementation( IDENavigatorOutlineViewClass, @selector( menuForEvent: ));
-        method = class_getInstanceMethod( IDENavigatorOutlineViewClass, @selector( menuForEvent: ));
-        method_setImplementation( method, ( IMP )&SCH_projectTree_menuForEvent );
-        // Add our menu
-        
-        
-        self.mnuStoryboardContextItem = [[ NSMenuItem alloc ] initWithTitle:@"Capture to image"
-                                                                     action:nil
-                                                              keyEquivalent:@"" ];
-        self.mnuStoryboardContextItem.submenu = [[ NSMenu alloc ] initWithTitle:self.mnuStoryboardContextItem.title ];
-        // Menu capture storyboard (xib)
-        NSMenuItem *actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Storyboard capture"
-                                                                  action:@selector( menuChupAnh_duocChon: )
-                                                           keyEquivalent:@"" ];
-        [ actionMenuItem setTarget:self ];
-        [ self.mnuStoryboardContextItem.submenu addItem:actionMenuItem ];
-        self.mnuChupAnhStoryboard = actionMenuItem;
-        // Menu capture project tree
-        actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Project tree capture"
-                                                      action:@selector( menuChupAnh_duocChon: )
-                                               keyEquivalent:@"" ];
-        [ actionMenuItem setTarget:self ];
-        self.mnuChupAnhPrjTree = actionMenuItem;
-        // Export
-        actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Export all frames"
-                                                      action:@selector( menuXuatRaHTML_duocChon: )
-                                               keyEquivalent:@"" ];
-        [ actionMenuItem setTarget:self ];
-        [ self.mnuStoryboardContextItem.submenu addItem:actionMenuItem ];
-        self.mnuXuatRaHTML = actionMenuItem;
-        
-        // Menu set xib zoom scale
-        actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Custom zoom sclae"
-                                                      action:@selector( menuZoom_duocChon: )
-                                               keyEquivalent:@"" ];
-        [ actionMenuItem setTarget:self ];
-        self.mnuSetZoomScale = actionMenuItem;
-        // Way to find the target scrollview
-        self.arrStoryboardPath = @[ @"NSTabView", @"DVTControllerContentView", @"DVTSplitView", @"DVTReplacementView",
-                                    @"DVTControllerContentView", @"DVTSplitView", @"DVTLayoutView_ML", @"NSView",
-                                    @"DVTControllerContentView", @"DVTControllerContentView", @"NSView", @"DVTBorderedView",
-                                    @"DVTControllerContentView", @"IBStructureAreaDockLabelContainer", @"DVTSplitView",
-                                    @"DVTReplacementView", @"DVTControllerContentView", @"DVTStackView_AppKitAutolayout",
-                                    @"IBCanvasScrollView" ];
-        self.arrStoryboardIdentifiers = @[ @"IBStoryboardCanvasView", @"IBCanvasView" ];
-        
-        self.arrPrjTreePath = @[ @"NSTabView", @"DVTControllerContentView", @"DVTSplitView", @"DVTReplacementView",
-                                 @"DVTControllerContentView", @"DVTBorderedView", @"DVTReplacementView",
-                                 @"DVTControllerContentView", @"DVTScrollView" ];
-        self.arrPrjTreeIdentifiers = @[ @"IDENavigatorOutlineView" ];
-        
-        // Internal objects
-        self.savePanelAccessoryView = [[ SCHImageSavePanelAccessoryViewController alloc ] initWithNibName:@"SCHImageSavePanelAccessoryViewController"
-                                                                                                   bundle:self.bundle ];
-        self.exportPanelAccesoryView = [[ SCHExportSavePanelAccessoryViewController alloc ] initWithNibName:@"SCHExportSavePanelAccessoryViewController"
-                                                                                                     bundle:self.bundle ];
-        self.schZoomer = [[ SCHStoryboardZoomViewController alloc ] initWithNibName:@"SCHStoryboardZoomViewController"
-                                                                             bundle:self.bundle ];
-        self.winZoomer = [ NSWindow windowWithContentViewController:self.schZoomer ];
-        self.winZoomer.styleMask &= ~NSResizableWindowMask;
+        [ self makeMyMenu ];
+        [ self makeMyComponents ];
+        [ self makeSearchPath ];
+        [ self performSelector:@selector( infectXCodeMenu ) withObject:nil afterDelay:0.5 ];
     }
     return self;
 }
