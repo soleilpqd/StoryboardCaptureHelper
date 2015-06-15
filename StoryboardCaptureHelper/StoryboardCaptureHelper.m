@@ -12,6 +12,8 @@
 #import "SCHExportSavePanelAccessoryViewController.h"
 #import "SCHStoryboardZoomViewController.h"
 
+// TODO: BUG with multi storyboard windows
+
 typedef NS_ENUM( NSUInteger, SCHMenuOperationTarget ){
     kSCHOperationChupAnhStoryboard,
     kSCHOperationChupAnhProjectTree
@@ -26,19 +28,19 @@ static StoryboardCaptureHelper *sharedPlugin;
 @property ( nonatomic, strong ) SCHExportSavePanelAccessoryViewController *exportPanelAccesoryView;
 @property ( nonatomic, readonly ) BOOL isWindowUnlimtedSize;
 
-@property ( nonatomic, strong ) NSMenuItem *mnuStoryboardContextItem;
+//@property ( nonatomic, strong ) NSMenuItem *mnuStoryboardContextItem;
 
-@property ( nonatomic, weak ) NSMenuItem *mnuChupAnhStoryboard;
+//@property ( nonatomic, weak ) NSMenuItem *mnuChupAnhStoryboard;
 @property ( nonatomic, strong ) NSArray *arrStoryboardPath;
 @property ( nonatomic, strong ) NSArray *arrStoryboardIdentifiers;
 
-@property ( nonatomic, strong ) NSMenuItem *mnuChupAnhPrjTree;
+//@property ( nonatomic, strong ) NSMenuItem *mnuChupAnhPrjTree;
 @property ( nonatomic, strong ) NSArray *arrPrjTreePath;
 @property ( nonatomic, strong ) NSArray *arrPrjTreeIdentifiers;
 
-@property ( nonatomic, weak ) NSMenuItem *mnuXuatRaHTML;
+//@property ( nonatomic, weak ) NSMenuItem *mnuXuatRaHTML;
 
-@property ( nonatomic, strong ) NSMenuItem *mnuSetZoomScale;
+//@property ( nonatomic, strong ) NSMenuItem *mnuSetZoomScale;
 @property ( nonatomic, strong ) NSEvent *lastContextMenuEvent;
 
 @property ( nonatomic, strong ) NSWindow *winZoomer;
@@ -60,13 +62,23 @@ NSMenu* ( *_original_storyboard_menuForEvent )( id, SEL, NSEvent* );
 NSMenu* SCH_storyboard_menuForEvent( id object, SEL selector, NSEvent* event ) {
     NSMenu *menu = _original_storyboard_menuForEvent( object, selector, event );
     if ( menu && [ menu.title isEqualToString:@"Xcode.InterfaceBuilderKit.MenuDefinition.ContextualMenu" ]){
+        BOOL isContainZoomMenuItem = NO;
+        BOOL isContainCaptureMenuItem = NO;
         [[ StoryboardCaptureHelper sharedPlugin ] setLastContextMenuEvent:event ];
-        if (![ menu.itemArray containsObject:[[ StoryboardCaptureHelper sharedPlugin ] mnuSetZoomScale ]]) {
-            [ menu insertItem:[[ StoryboardCaptureHelper sharedPlugin ] mnuSetZoomScale ]
+        for ( NSMenuItem *item in menu.supermenu.itemArray ) {
+            if ([[ StoryboardCaptureHelper sharedPlugin ] isCustomZoomStoryboardMenuItem:item ]) {
+                isContainZoomMenuItem = YES;
+            }
+            if ([[ StoryboardCaptureHelper sharedPlugin ] isStoryboardCaptureMenuItem:item ]) {
+                isContainCaptureMenuItem = YES;
+            }
+        }
+        if ( !isContainZoomMenuItem ) {
+            [ menu insertItem:[[ StoryboardCaptureHelper sharedPlugin ] makeCustomZoomStoryboardMenuItem ]
                       atIndex:menu.itemArray.count - 2 ];
         }
-        if (![ menu.itemArray containsObject:[[ StoryboardCaptureHelper sharedPlugin ] mnuStoryboardContextItem ]]) {
-            [ menu addItem:[[ StoryboardCaptureHelper sharedPlugin ] mnuStoryboardContextItem ]];
+        if ( !isContainCaptureMenuItem ) {
+            [ menu addItem:[[ StoryboardCaptureHelper sharedPlugin ] makeStoryboardCaptureMenuItem ]];
         }
     }
     return menu;
@@ -76,8 +88,15 @@ NSMenu* ( *_original_projectTree_menuForEvent )( id, SEL, NSEvent* );
 NSMenu* SCH_projectTree_menuForEvent( id object, SEL selector, NSEvent* event ) {
     NSMenu *menu = _original_projectTree_menuForEvent( object, selector, event );
     if ( menu && [ menu.title isEqualToString:@"Project navigator contextual menu" ]){
-        if (![ menu.itemArray containsObject:[[ StoryboardCaptureHelper sharedPlugin ] mnuChupAnhPrjTree ]]) {
-            [ menu addItem:[[ StoryboardCaptureHelper sharedPlugin ] mnuChupAnhPrjTree ]];
+        BOOL isContainMenuItem = NO;
+        for ( NSMenuItem *item in menu.supermenu.itemArray ) {
+            if ([[ StoryboardCaptureHelper sharedPlugin ] isProjectTreeCaptureMenuItem:item ]) {
+                isContainMenuItem = YES;
+                break;
+            }
+        }
+        if ( !isContainMenuItem ) {
+            [ menu addItem:[[ StoryboardCaptureHelper sharedPlugin ] makeProjectTreeCaptureMenuItem ]];
         }
     }
     return menu;
@@ -93,8 +112,7 @@ CGRect SCH_constrainFrameRect_toScreen( id object, SEL selector, CGRect rect, NS
     }
 }
 
-+ (void)pluginDidLoad:(NSBundle *)plugin
-{
++ (void)pluginDidLoad:(NSBundle *)plugin {
     static dispatch_once_t onceToken;
     NSString *currentApplicationName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
     if ([currentApplicationName isEqual:@"Xcode"]) {
@@ -104,8 +122,7 @@ CGRect SCH_constrainFrameRect_toScreen( id object, SEL selector, CGRect rect, NS
     }
 }
 
-+ (instancetype)sharedPlugin
-{
++ (instancetype)sharedPlugin {
     return sharedPlugin;
 }
 
@@ -123,38 +140,73 @@ CGRect SCH_constrainFrameRect_toScreen( id object, SEL selector, CGRect rect, NS
     method_setImplementation( method, ( IMP )&SCH_projectTree_menuForEvent );
 }
 
--( void )makeMyMenu {
-    self.mnuStoryboardContextItem = [[ NSMenuItem alloc ] initWithTitle:@"Capture to image"
-                                                                 action:nil
-                                                          keyEquivalent:@"" ];
-    self.mnuStoryboardContextItem.submenu = [[ NSMenu alloc ] initWithTitle:self.mnuStoryboardContextItem.title ];
-    // Menu capture storyboard (xib)
+/* MENU:
+ Custom zoom scale
+ Capture to image
+    Storyboard capture
+    Export all frames
+ 
+ Project tree capture
+ */
+
+-( NSMenuItem* )makeCustomZoomStoryboardMenuItem {
+    NSMenuItem *actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Custom zoom sclae"
+                                                  action:@selector( menuZoom_duocChon: )
+                                           keyEquivalent:@"" ];
+    [ actionMenuItem setTarget:self ];
+    return actionMenuItem;
+}
+
+-( BOOL )isCustomZoomStoryboardMenuItem:( NSMenuItem* )menuItem {
+    return menuItem.target == self && menuItem.action == @selector( menuZoom_duocChon: );
+}
+
+-( NSMenuItem* )makeStoryboardCaptureMenuItem {
+    // --
+    NSMenuItem *contextItem = [[ NSMenuItem alloc ] initWithTitle:@"Capture to image"
+                                                           action:nil
+                                                    keyEquivalent:@"" ];
+    contextItem.submenu = [[ NSMenu alloc ] initWithTitle:contextItem.title ];
+    // ----
     NSMenuItem *actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Storyboard capture"
                                                               action:@selector( menuChupAnh_duocChon: )
                                                        keyEquivalent:@"" ];
     [ actionMenuItem setTarget:self ];
-    [ self.mnuStoryboardContextItem.submenu addItem:actionMenuItem ];
-    self.mnuChupAnhStoryboard = actionMenuItem;
-    // Menu capture project tree
-    actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Project tree capture"
-                                                  action:@selector( menuChupAnh_duocChon: )
-                                           keyEquivalent:@"" ];
-    [ actionMenuItem setTarget:self ];
-    self.mnuChupAnhPrjTree = actionMenuItem;
-    // Export
+    [ contextItem.submenu addItem:actionMenuItem ];
+    // ----
     actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Export all frames"
                                                   action:@selector( menuXuatRaHTML_duocChon: )
                                            keyEquivalent:@"" ];
     [ actionMenuItem setTarget:self ];
-    [ self.mnuStoryboardContextItem.submenu addItem:actionMenuItem ];
-    self.mnuXuatRaHTML = actionMenuItem;
+    [ contextItem.submenu addItem:actionMenuItem ];
     
-    // Menu set xib zoom scale
-    actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Custom zoom sclae"
-                                                  action:@selector( menuZoom_duocChon: )
+    return contextItem;
+}
+
+-( BOOL )isStoryboardCaptureMenuItem:( NSMenuItem* )menuItem {
+    return [ menuItem.title isEqualToString:@"Capture to image" ] &&
+            menuItem.submenu != nil &&
+            menuItem.submenu.itemArray.count == 2;
+}
+
+-( BOOL )isCaptureToImageMenuItem:( NSMenuItem* )menuItem {
+    return menuItem.target == self && menuItem.action == @selector( menuChupAnh_duocChon: );
+}
+
+-( BOOL )isExportMenuItem:( NSMenuItem* )menuItem {
+    return menuItem.target == self && menuItem.action == @selector( menuXuatRaHTML_duocChon: );
+}
+
+-( NSMenuItem* )makeProjectTreeCaptureMenuItem {
+    NSMenuItem *actionMenuItem = [[ NSMenuItem alloc ] initWithTitle:@"Project tree capture"
+                                                  action:@selector( menuChupAnhPrjTree_duocChon: )
                                            keyEquivalent:@"" ];
     [ actionMenuItem setTarget:self ];
-    self.mnuSetZoomScale = actionMenuItem;
+    return actionMenuItem;
+}
+
+-( BOOL )isProjectTreeCaptureMenuItem:( NSMenuItem* )menuItem {
+    return menuItem.target == self && menuItem.action == @selector( menuChupAnhPrjTree_duocChon: );
 }
 
 -( void )makeSearchPath {
@@ -183,12 +235,10 @@ CGRect SCH_constrainFrameRect_toScreen( id object, SEL selector, CGRect rect, NS
     self.winZoomer.styleMask &= ~NSResizableWindowMask;
 }
 
-- (id)initWithBundle:(NSBundle *)plugin
-{
+- (id)initWithBundle:(NSBundle *)plugin {
     if (self = [super init]) {
         // reference to plugin's bundle, for resource access
         self.bundle = plugin;
-        [ self makeMyMenu ];
         [ self makeMyComponents ];
         [ self makeSearchPath ];
         [ self performSelector:@selector( infectXCodeMenu ) withObject:nil afterDelay:0.5 ];
@@ -196,8 +246,7 @@ CGRect SCH_constrainFrameRect_toScreen( id object, SEL selector, CGRect rect, NS
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -384,12 +433,12 @@ CGRect SCH_constrainFrameRect_toScreen( id object, SEL selector, CGRect rect, NS
 // Enable menu if we can find target scrollview
 -( BOOL )validateMenuItem:(NSMenuItem *)menuItem {
     self.targetWindow = [ NSApp keyWindow ];
-    if ( menuItem == self.mnuChupAnhStoryboard ||
-        menuItem == self.mnuXuatRaHTML ||
-        menuItem == self.mnuSetZoomScale ) {
+    if ([ self isCaptureToImageMenuItem:menuItem ] ||
+        [ self isExportMenuItem:menuItem ] ||
+        [ self isCustomZoomStoryboardMenuItem:menuItem ]) {
         return [ self searchForTargetScrollViewWithPath:self.arrStoryboardPath
                                         contentViewType:self.arrStoryboardIdentifiers ] != nil;
-    } else if ( menuItem == self.mnuChupAnhPrjTree ) {
+    } else if ([ self isProjectTreeCaptureMenuItem:menuItem ]) {
         return [ self searchForTargetScrollViewWithPath:self.arrPrjTreePath
                                         contentViewType:self.arrPrjTreeIdentifiers ] != nil;
     }
@@ -397,15 +446,15 @@ CGRect SCH_constrainFrameRect_toScreen( id object, SEL selector, CGRect rect, NS
 }
 
 -( void )menuChupAnh_duocChon:( id )sender {
-    if ( sender == self.mnuChupAnhStoryboard )
-        [ self showSavePanelWithSuggestFileName:[[ NSApp keyWindow ] title ]
-                                  captureTarget:kSCHOperationChupAnhStoryboard ] ;
-    else if ( sender == self.mnuChupAnhPrjTree ) {
-        NSWindowController *windowCtrl = [[ NSApp keyWindow ] windowController ];
-        NSString *suggestName = [( NSDocument* )[ windowCtrl document ] displayName ];
-        [ self showSavePanelWithSuggestFileName:suggestName ? [ suggestName stringByDeletingPathExtension ] : @""
-                                  captureTarget:kSCHOperationChupAnhProjectTree ];
-    }
+    [ self showSavePanelWithSuggestFileName:[[ NSApp keyWindow ] title ]
+                              captureTarget:kSCHOperationChupAnhStoryboard ] ;
+}
+
+-( void )menuChupAnhPrjTree_duocChon:( id )sender {
+    NSWindowController *windowCtrl = [[ NSApp keyWindow ] windowController ];
+    NSString *suggestName = [( NSDocument* )[ windowCtrl document ] displayName ];
+    [ self showSavePanelWithSuggestFileName:suggestName ? [ suggestName stringByDeletingPathExtension ] : @""
+                              captureTarget:kSCHOperationChupAnhProjectTree ];
 }
 
 -( void )menuZoom_duocChon:( id )sender {
