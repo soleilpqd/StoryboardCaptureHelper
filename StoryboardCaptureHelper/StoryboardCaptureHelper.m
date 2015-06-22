@@ -89,7 +89,7 @@ NSMenu* SCH_projectTree_menuForEvent( id object, SEL selector, NSEvent* event ) 
     NSMenu *menu = _original_projectTree_menuForEvent( object, selector, event );
     if ( menu && [ menu.title isEqualToString:@"Project navigator contextual menu" ]){
         BOOL isContainMenuItem = NO;
-        for ( NSMenuItem *item in menu.supermenu.itemArray ) {
+        for ( NSMenuItem *item in menu.itemArray ) {
             if ([[ StoryboardCaptureHelper sharedPlugin ] isProjectTreeCaptureMenuItem:item ]) {
                 isContainMenuItem = YES;
                 break;
